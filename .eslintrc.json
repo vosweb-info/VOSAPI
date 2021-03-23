@@ -1,0 +1,11 @@
+{
+  "extends": ["airbnb-typescript"],
+  "rules": {
+    "no-console": "off",
+    "import/prefer-default-export": "off"
+  },
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "ignorePatterns": ["node_modules/", "build/"]
+}
