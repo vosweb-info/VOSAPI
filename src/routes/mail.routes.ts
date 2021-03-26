@@ -8,7 +8,7 @@ const { MAIL_ADDRESS = 'local@test.com' } = process.env;
 const router = Router();
 
 router
-  .route('/mail')
+  .route('/')
   .post(ReCaptcha, (req: Request, res: Response, next: NextFunction) => {
     const {
       name, email, phone, subject, message,
@@ -35,4 +35,4 @@ router
       .catch((error) => next(error));
   });
 
-export { router as Mail };
+export default router;
