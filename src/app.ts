@@ -1,4 +1,5 @@
 import cors from 'cors';
+import fs from 'fs';
 import express, {
   Application, NextFunction, Request, Response,
 } from 'express';
@@ -18,6 +19,12 @@ app.use(morgan('dev'));
 app.use('/api/v1', routes);
 
 if (NODE_ENV === 'production') {
+  app.use(
+    morgan('tiny', {
+      stream: fs.createWriteStream('./app.log', { flags: 'a' }),
+    }),
+  );
+
   app.use(express.static(path.join(__dirname, PUBLIC_DIR)));
 
   app.get('*', (req: Request, res: Response, next: NextFunction) => {
