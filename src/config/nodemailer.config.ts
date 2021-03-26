@@ -10,6 +10,8 @@ const {
   NODE_ENV,
 } = process.env;
 
+const viewDir = NODE_ENV === 'production' ? 'views/email' : 'src/views/email';
+
 const transporter = nodemailer.createTransport({
   host: MAIL_HOST,
   port: Number(MAIL_PORT),
@@ -25,10 +27,10 @@ transporter.use(
   handlebars({
     viewEngine: {
       extName: '.handlebars',
-      layoutsDir: 'src/views/email',
+      layoutsDir: viewDir,
       defaultLayout: 'email',
     },
-    viewPath: 'src/views/email',
+    viewPath: viewDir,
   }),
 );
 
