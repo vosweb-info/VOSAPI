@@ -5,7 +5,7 @@ import { Nodemailer } from '../config/nodemailer.config';
 import { ReCaptcha } from '../middlewares';
 
 const { MAIL_ADDRESS = 'local@test.com' } = process.env;
-const router = Router();
+const router: Router = Router();
 
 router
   .route('/')

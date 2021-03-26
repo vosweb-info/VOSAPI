@@ -1,14 +1,13 @@
 import cors from 'cors';
-import fs from 'fs';
 import express, {
   Application, NextFunction, Request, Response,
 } from 'express';
+import fs from 'fs';
 import morgan from 'morgan';
-import path from 'path';
 import { Nodemailer } from './config/nodemailer.config';
 import routes from './routes';
 
-const { PORT = 3000, NODE_ENV, PUBLIC_DIR = '../public_html' } = process.env;
+const { PORT = 3000, NODE_ENV } = process.env;
 const app: Application = express();
 
 app.use(express.json());
@@ -16,7 +15,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan('dev'));
 
-app.use('/api/v1', routes);
+app.use('/v1', routes);
 
 if (NODE_ENV === 'production') {
   app.use(
@@ -24,20 +23,20 @@ if (NODE_ENV === 'production') {
       stream: fs.createWriteStream('./app.log', { flags: 'a' }),
     }),
   );
-
-  app.use(express.static(path.join(__dirname, PUBLIC_DIR)));
-
-  app.get('*', (req: Request, res: Response, next: NextFunction) => {
-    res.sendFile(path.join(__dirname, PUBLIC_DIR, 'index.html'));
-    next();
-  });
 }
 
-app.use((error: any, req: Request, res: Response, next: NextFunction) => {
-  const code = error.status || error.statusCode || 500;
-  res.status(code).send({
-    message: error.message,
+app.get('*', (req: Request, res: Response, next: NextFunction) => {
+  res.status(404).send({
+    message: 'Not Found',
   });
+  next();
+});
+
+app.use((error: any, req: Request, res: Response, next: NextFunction) => {
+  const code: number = error.status || error.statusCode || 500;
+  const { message } = error;
+
+  res.status(code).send({ message });
   next();
 });
 
