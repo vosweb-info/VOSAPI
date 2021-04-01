@@ -10,7 +10,7 @@ const {
   NODE_ENV,
 } = process.env;
 
-const viewDir: string = NODE_ENV === 'production' ? 'views/email' : 'src/views/email';
+const viewDir: string = 'views/email';
 
 const transporter = nodemailer.createTransport({
   host: MAIL_HOST,

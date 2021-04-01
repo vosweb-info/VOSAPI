@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { NextFunction, Request, Response } from 'express';
+import { ErrorHandler } from '../helpers';
 
 const { GOOGLE_SECRET } = process.env;
 
@@ -11,9 +12,7 @@ const verify = (req: Request, res: Response, next: NextFunction) => {
     .post(url)
     .then(({ data }) => {
       if (data.success) return next();
-      return next({
-        message: data['error-codes'].join(', '),
-      });
+      throw new ErrorHandler(422, 'reCaptcha verification failed', data['error-codes']);
     })
     .catch((error: any) => {
       next(error);
