@@ -2,9 +2,10 @@ import {
   NextFunction, Request, Response, Router,
 } from 'express';
 import { Nodemailer } from '../config/nodemailer.config';
+import { ErrorHandler, getMissingVariables } from '../helpers';
 import { ReCaptcha } from '../middlewares';
 
-const { MAIL_ADDRESS = 'local@test.com' } = process.env;
+const { MAIL_ADDRESS } = process.env;
 const router: Router = Router();
 
 router
@@ -13,6 +14,12 @@ router
     const {
       name, email, phone, subject, message,
     } = req.body;
+
+    const missingVariables = getMissingVariables({
+      name, email, subject, message,
+    });
+    if (missingVariables.length) throw new ErrorHandler(400, 'Missing required data', missingVariables);
+
     const contactData = {
       from: email,
       to: MAIL_ADDRESS,

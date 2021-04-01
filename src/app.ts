@@ -6,6 +6,7 @@ import fs from 'fs';
 import morgan from 'morgan';
 import { Nodemailer } from './config/nodemailer.config';
 import routes from './routes';
+import { ErrorHandler, handleError } from './helpers';
 
 const { PORT = 3000, NODE_ENV } = process.env;
 const app: Application = express();
@@ -25,18 +26,12 @@ if (NODE_ENV === 'production') {
   );
 }
 
-app.get('*', (req: Request, res: Response, next: NextFunction) => {
-  res.status(404).send({
-    message: 'Not Found',
-  });
-  next();
+app.get('*', () => {
+  throw new ErrorHandler(404, 'Not Found');
 });
 
 app.use((error: any, req: Request, res: Response, next: NextFunction) => {
-  const code: number = error.status || error.statusCode || 500;
-  const { message } = error;
-
-  res.status(code).send({ message });
+  handleError(error, res);
   next();
 });
 
